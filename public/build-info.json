@@ -1,0 +1,158 @@
+{
+  "documents": [
+    {
+      "source": "A/01_AI_Act_핵심과_입법_필요성.md",
+      "url": "/A/01_AI_Act_핵심과_입법_필요성.html",
+      "title": "AI Act 핵심 내용과 입법 필요성",
+      "group": "A"
+    },
+    {
+      "source": "A/02_근거자료.md",
+      "url": "/A/02_근거자료.html",
+      "title": "AI Act 내용과 입법 필요성의 근거자료",
+      "group": "A"
+    },
+    {
+      "source": "A/03_입법_흐름과_검증.md",
+      "url": "/A/03_입법_흐름과_검증.html",
+      "title": "AI Act 입법 흐름과 1차 자료 검증",
+      "group": "A"
+    },
+    {
+      "source": "A/README.md",
+      "url": "/A/README.html",
+      "title": "A의 역할과 작업 안내",
+      "group": "A"
+    },
+    {
+      "source": "B/01_외부_이해관계자.md",
+      "url": "/B/01_외부_이해관계자.html",
+      "title": "외부 이해관계자: 누가 어떤 규제를 원했는가",
+      "group": "B"
+    },
+    {
+      "source": "B/02_퍼트남_양면게임_분석.md",
+      "url": "/B/02_퍼트남_양면게임_분석.html",
+      "title": "퍼트남 양면게임으로 본 AI Act 협상",
+      "group": "B"
+    },
+    {
+      "source": "B/03_당시_분위기와_프독이의_협상력.md",
+      "url": "/B/03_당시_분위기와_프독이의_협상력.html",
+      "title": "당시 분위기와 프독이의 협상력",
+      "group": "B"
+    },
+    {
+      "source": "B/04_근거자료와_검증한계.md",
+      "url": "/B/04_근거자료와_검증한계.html",
+      "title": "근거자료와 검증 한계",
+      "group": "B"
+    },
+    {
+      "source": "B/05_Graphify_흐름과의_비교.md",
+      "url": "/B/05_Graphify_흐름과의_비교.html",
+      "title": "Graphify의 입법 흐름과 B 분석의 비교",
+      "group": "B"
+    },
+    {
+      "source": "B/06_검증결과와_보강사항.md",
+      "url": "/B/06_검증결과와_보강사항.html",
+      "title": "B 자료 재검증 결과",
+      "group": "B"
+    },
+    {
+      "source": "B/07_최초요구와_타협_검증표.md",
+      "url": "/B/07_최초요구와_타협_검증표.html",
+      "title": "최초 요구·중간 위임·최종 결과의 대조",
+      "group": "B"
+    },
+    {
+      "source": "B/README.md",
+      "url": "/B/README.html",
+      "title": "B의 역할과 자료 안내",
+      "group": "B"
+    },
+    {
+      "source": "C/독립비판_서브에이전트.md",
+      "url": "/C/독립비판_서브에이전트.html",
+      "title": "C 분석에 대한 독립 비판 검토",
+      "group": "C"
+    },
+    {
+      "source": "C/입법흐름_검증보고서.md",
+      "url": "/C/입법흐름_검증보고서.html",
+      "title": "Graphify 입법 흐름과 양면게임 분석 검증",
+      "group": "C"
+    },
+    {
+      "source": "C/C_역할과_내부이해관계자.md",
+      "url": "/C/C_역할과_내부이해관계자.html",
+      "title": "C — AI Act 양면게임 분석가",
+      "group": "C"
+    },
+    {
+      "source": "C/README.md",
+      "url": "/C/README.html",
+      "title": "C — AI Act 양면게임 분석가",
+      "group": "C"
+    },
+    {
+      "source": "D/01_AI_Act_협상국면과_양면게임.md",
+      "url": "/D/01_AI_Act_협상국면과_양면게임.html",
+      "title": "EU AI Act 협상 국면에 대한 퍼트남 양면 게임 분석",
+      "group": "D"
+    },
+    {
+      "source": "D/02_종합결론.md",
+      "url": "/D/02_종합결론.html",
+      "title": "EU AI Act 협상에 대한 종합 결론",
+      "group": "D"
+    },
+    {
+      "source": "D/README.md",
+      "url": "/D/README.html",
+      "title": "D 작업 안내",
+      "group": "D"
+    },
+    {
+      "source": "F/01_20분_발표개요.md",
+      "url": "/F/01_20분_발표개요.html",
+      "title": "EU AI Act GPAI 규제 협상의 양면게임 분석 발표 개요",
+      "group": "F"
+    },
+    {
+      "source": "F/02_슬라이드_구성과_시간배분.md",
+      "url": "/F/02_슬라이드_구성과_시간배분.html",
+      "title": "EU AI Act GPAI 협상: 슬라이드 구성과 시간 배분",
+      "group": "F"
+    }
+  ],
+  "groups": [
+    {
+      "id": "A",
+      "title": "입법 배경과 필요성",
+      "description": "AI Act의 목적, 규율 구조와 입법의 출발점"
+    },
+    {
+      "id": "B",
+      "title": "외부 이해관계와 협상 요구",
+      "description": "행위자별 요구, 전달 경로, 최초 요구와 타협 비교"
+    },
+    {
+      "id": "C",
+      "title": "내부 조율과 검증",
+      "description": "정부·회원국·의회의 조율과 방법론에 대한 비판 검토"
+    },
+    {
+      "id": "D",
+      "title": "협상 결과와 종합 결론",
+      "description": "교섭·내부 위임·승인을 연결한 양면게임 해석"
+    },
+    {
+      "id": "F",
+      "title": "발표 구성안",
+      "description": "20분 발표 개요와 슬라이드별 시간 배분"
+    }
+  ],
+  "excludedLocalReferences": 81
+}

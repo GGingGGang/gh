@@ -1,0 +1,32 @@
+name: Validate site and Kubernetes configuration
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: v1.34.1
+      - run: npm ci
+      - run: npm run check
+      - name: Generated site must match its sources
+        run: |
+          git diff --exit-code -- public/
+          test -z "$(git ls-files --others --exclude-standard public/)"
+      - name: Validate nginx configuration in the runtime image
+        run: |
+          docker run --rm --entrypoint nginx \
+            -v "$PWD/public:/git/current/public:ro" \
+            -v "$PWD/deploy/base/nginx.conf:/etc/nginx/conf.d/default.conf:ro" \
+            docker.io/nginxinc/nginx-unprivileged:1.28-alpine -t

@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eu-ai-act
+spec:
+  template:
+    spec:
+      containers:
+        - name: git-sync
+          env:
+            - name: GITSYNC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: eu-ai-act-git-auth
+                  key: username
+            - name: GITSYNC_PASSWORD_FILE
+              value: /etc/git-auth/password
+          volumeMounts:
+            - name: git-auth
+              mountPath: /etc/git-auth
+              readOnly: true
+      volumes:
+        - name: git-auth
+          secret:
+            secretName: eu-ai-act-git-auth
+            defaultMode: 0440
+            items:
+              - key: password
+                path: password

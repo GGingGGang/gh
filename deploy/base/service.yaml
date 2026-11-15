@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: eu-ai-act
+  labels:
+    app.kubernetes.io/name: eu-ai-act
+spec:
+  selector:
+    app.kubernetes.io/name: eu-ai-act
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
