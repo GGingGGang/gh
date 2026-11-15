@@ -46,6 +46,10 @@ test("all top-level A/B/C/D/F analysis documents are published and originals are
   assert.ok(
     info.documents.some((d) => d.source === "C/독립비판_서브에이전트.md"),
   );
+  assert.deepEqual(
+    info.documents.filter((d) => d.group === "D").map((d) => d.source),
+    ["D/02_종합결론.md"],
+  );
   for (const filename of walk(publicRoot)) {
     const relative = path.relative(publicRoot, filename).replaceAll("\\", "/");
     assert.doesNotMatch(
@@ -113,6 +117,10 @@ test("document search and responsive navigation work without external runtime se
   search.value = "";
   search.dispatchEvent(new w.Event("input"));
   assert.equal(d.getElementById("library-groups").hidden, false);
+  assert.equal(
+    d.getElementById("search-status").textContent,
+    `${info.documents.length}개의 분석·개요 문서`,
+  );
   const toggle = d.querySelector(".sidebar-toggle");
   toggle.click();
   assert.equal(toggle.getAttribute("aria-expanded"), "true");

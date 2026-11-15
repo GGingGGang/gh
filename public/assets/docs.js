@@ -21,7 +21,7 @@ if (search)
     if (!query) {
       groups.hidden = false;
       results.hidden = true;
-      status.textContent = "21개의 분석·개요 문서";
+      status.textContent = `${status.dataset.total}개의 분석·개요 문서`;
       return;
     }
     try {

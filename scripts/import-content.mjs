@@ -13,6 +13,7 @@ for (const group of ["A", "B", "C", "D", "F"]) {
   fs.mkdirSync(to, { recursive: true });
   for (const entry of fs.readdirSync(from, { withFileTypes: true })) {
     if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
+    if (group === "D" && entry.name !== "02_종합결론.md") continue;
     fs.copyFileSync(path.join(from, entry.name), path.join(to, entry.name));
     count++;
   }

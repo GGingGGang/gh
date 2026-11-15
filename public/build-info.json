@@ -97,21 +97,9 @@
       "group": "C"
     },
     {
-      "source": "D/01_AI_Act_협상국면과_양면게임.md",
-      "url": "/D/01_AI_Act_협상국면과_양면게임.html",
-      "title": "EU AI Act 협상 국면에 대한 퍼트남 양면 게임 분석",
-      "group": "D"
-    },
-    {
       "source": "D/02_종합결론.md",
       "url": "/D/02_종합결론.html",
       "title": "EU AI Act 협상에 대한 종합 결론",
-      "group": "D"
-    },
-    {
-      "source": "D/README.md",
-      "url": "/D/README.html",
-      "title": "D 작업 안내",
       "group": "D"
     },
     {
@@ -154,5 +142,5 @@
       "description": "20분 발표 개요와 슬라이드별 시간 배분"
     }
   ],
-  "excludedLocalReferences": 81
+  "excludedLocalReferences": 73
 }
