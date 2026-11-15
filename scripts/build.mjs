@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import MarkdownIt from "markdown-it";
 import GithubSlugger from "github-slugger";
 import { build } from "esbuild";
+import { markdownFiles } from "./content-files.mjs";
 
 export const ROOT = path.resolve(
   path.dirname(fileURLToPath(import.meta.url)),
@@ -22,8 +23,8 @@ export const GROUPS = [
   },
   {
     id: "C",
-    title: "내부 조율과 검증",
-    description: "정부·회원국·의회의 조율과 방법론에 대한 비판 검토",
+    title: "내부 이해관계와 조율",
+    description: "내부 이해관계자, 입법·승인 과정, 협상 5요소 분석",
   },
   {
     id: "D",
@@ -49,11 +50,8 @@ const md = new MarkdownIt({ html: false, linkify: true, typographer: false });
 const catalog = [];
 
 for (const group of GROUPS) {
-  for (const entry of fs
-    .readdirSync(path.join(ROOT, group.id), { withFileTypes: true })
-    .sort((a, b) => a.name.localeCompare(b.name, "ko"))) {
-    if (!entry.isFile() || !entry.name.endsWith(".md")) continue;
-    const source = `${group.id}/${entry.name}`;
+  for (const relative of markdownFiles(path.join(ROOT, group.id))) {
+    const source = `${group.id}/${relative}`;
     const content = fs
       .readFileSync(path.join(ROOT, source), "utf8")
       .replace(/^\uFEFF/, "")
@@ -75,9 +73,9 @@ for (const group of GROUPS) {
     catalog.push({
       group: group.id,
       source,
-      name: entry.name,
-      title: headings.find((h) => h.level === 1)?.text || entry.name,
-      url: `/${source.replace(/\.md$/, ".html")}`,
+      name: path.basename(relative),
+      title: headings.find((h) => h.level === 1)?.text || relative,
+      url: `/${source.replace(/\.md$/i, ".html")}`,
       content,
       tokens,
       headings,
@@ -85,6 +83,17 @@ for (const group of GROUPS) {
   }
 }
 const bySource = new Map(catalog.map((doc) => [doc.source, doc]));
+// Older A/F documents refer to these files before their numbering was updated.
+const renamedSources = {
+  "B/04_근거자료와_검증한계.md": "B/05_근거자료와_검증한계.md",
+  "B/07_최초요구와_타협_검증표.md": "B/04_공개입장과_타협_검증표.md",
+  "C/C_역할과_내부이해관계자.md": "C/01_역할과_내부이해관계자.md",
+  "C/입법흐름_검증보고서.md": "C/02_입법흐름_검증보고서.md",
+  "C/협상5요소_쟁점분석.md": "C/03_협상5요소_쟁점분석.md",
+  "C/검증자료/README.md": "C/04_출처대장.md",
+  "C/README.md": "C/00_읽기안내.md",
+  "D/README.md": "D/00_읽기안내.md",
+};
 const excluded = [];
 
 function resolveLink(href, doc) {
@@ -106,7 +115,7 @@ function resolveLink(href, doc) {
   }
   if (parsed.origin !== "https://local.invalid") return { excluded: true };
   const candidate = decodeURIComponent(parsed.pathname).slice(1);
-  const target = bySource.get(candidate);
+  const target = bySource.get(candidate) || bySource.get(renamedSources[candidate]);
   if (!target) {
     excluded.push({ document: doc.source, target: candidate });
     return { excluded: true };
@@ -271,7 +280,7 @@ for (const group of GROUPS) {
     shell({ title: group.title, body, doc: { group: group.id } }),
   );
 }
-const library = `<div class="collection-title"><span>READ THE DOCUMENTS / ${catalog.length} NOTES</span><h1>자료를 연결해서 읽기.</h1><p>학습 페이지에서 큰 흐름을 잡았다면, 각 분야의 근거·검증·비판을 함께 읽어보세요.</p></div><label class="document-search-label" for="document-search">문서 제목과 본문 검색</label><div class="document-search-wrap"><input id="document-search" type="search" placeholder="예: 윈셋, Aleph Alpha, 승인…" autocomplete="off"><span aria-hidden="true">⌕</span></div><p id="search-status" role="status" data-total="${catalog.length}">${catalog.length}개의 분석·개요 문서</p><div id="search-results" class="search-results" hidden></div><div id="library-groups">${GROUPS.map(
+const library = `<div class="collection-title"><span>READ THE DOCUMENTS / ${catalog.length} NOTES</span><h1>자료를 연결해서 읽기.</h1><p>입법 배경부터 이해관계, 협상 과정과 결론까지 각 분야의 분석을 이어서 읽어보세요.</p></div><label class="document-search-label" for="document-search">문서 제목과 본문 검색</label><div class="document-search-wrap"><input id="document-search" type="search" placeholder="예: 윈셋, Aleph Alpha, 승인…" autocomplete="off"><span aria-hidden="true">⌕</span></div><p id="search-status" role="status" data-total="${catalog.length}">${catalog.length}개의 분석·개요 문서</p><div id="search-results" class="search-results" hidden></div><div id="library-groups">${GROUPS.map(
   (group) =>
     `<section class="library-group"><div><a href="/${group.id}/"><span>${group.id}</span><h2>${group.title}</h2></a><p>${group.description}</p></div><div class="document-grid">${catalog
       .filter((doc) => doc.group === group.id)
@@ -302,7 +311,7 @@ write(
   "sources/index.html",
   shell({
     title: "자료 포함 범위",
-    body: `<div class="collection-title"><span>ABOUT THE MATERIALS</span><h1>분석 문서는 읽고,<br>원문은 출처에서.</h1><p>A·B·C·D·F의 최상위 Markdown ${catalog.length}개와 학습 페이지만 포함합니다.</p></div><article class="markdown-body"><h2>포함한 내용</h2><p>입법 배경, 이해관계 분석, 내부 조율 검토, 종합 결론, 비판 검토, 발표 구성안입니다. C의 독립 비판 검토도 분석상의 한계를 살펴볼 수 있도록 함께 제공합니다.</p><h2>포함하지 않은 파일</h2><p>1차 자료 PDF·보관 HTML·발췌 TXT, 원문·검증자료·검증 폴더, 스크린샷, 수집 기록, Graphify 데이터는 이 배포에 넣지 않았습니다.</p><p>문서의 제외 대상 로컬 링크는 <span class="excluded-reference">출처명 <small>파일 미포함</small></span>으로 표시합니다. 원래 공개된 공식 웹사이트의 링크는 유지하며, 원문을 이 사이트에 복제하지 않습니다.</p><h2>F는 무엇인가요?</h2><p>F는 앞서 발표 구성을 저장할 때 지정한 폴더 이름입니다. 화면에서는 ‘발표 구성안’으로 표시하고, 기존 경로와 문서 간 링크를 유지합니다.</p><h2>분석의 시간 범위</h2><p>2023년 협상과 2024년 원법의 승인·채택을 중심으로 합니다. 이후 개정이나 현재 적용 일정과 구분해서 읽어주세요.</p></article><div class="doc-end"><a href="/">스크롤 학습</a><a href="/docs/">문서실 →</a></div>`,
+    body: `<div class="collection-title"><span>ABOUT THE MATERIALS</span><h1>분석 문서는 읽고,<br>원문은 출처에서.</h1><p>A·B·C·D·F의 분석·발표 문서 ${catalog.length}개와 학습 페이지를 제공합니다.</p></div><article class="markdown-body"><h2>포함한 내용</h2><p>입법 배경, 외부·내부 이해관계, 협상 5요소, 협상 국면 분석과 종합 결론, 발표 구성안입니다. 읽기 안내와 출처대장도 함께 제공합니다. D는 읽기 안내에서 분석 본문을 거쳐 종합 결론으로 이어집니다.</p><h2>자료 이용</h2><p>B·C·D에서는 archive·private 폴더 밖의 모든 Markdown 문서를 제공합니다. 1차 자료 파일은 포함하지 않습니다. 문서의 제외 대상 로컬 링크는 <span class="excluded-reference">출처명 <small>파일 미포함</small></span>으로 표시합니다. 공식 웹사이트 등 외부 출처 링크에서 원문을 확인할 수 있습니다.</p><h2>F는 무엇인가요?</h2><p>F는 앞서 발표 구성을 저장할 때 지정한 폴더 이름입니다. 화면에서는 ‘발표 구성안’으로 표시하고, 기존 경로와 문서 간 링크를 유지합니다.</p><h2>분석의 시간 범위</h2><p>2023년 협상과 2024년 원법의 승인·채택을 중심으로 합니다. 이후 개정이나 현재 적용 일정과 구분해서 읽어주세요.</p></article><div class="doc-end"><a href="/">스크롤 학습</a><a href="/docs/">문서실 →</a></div>`,
   }),
 );
 write(

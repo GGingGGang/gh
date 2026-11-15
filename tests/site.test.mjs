@@ -7,6 +7,8 @@ import { execFileSync, spawn } from "node:child_process";
 import { JSDOM } from "jsdom";
 import { parseAllDocuments } from "yaml";
 import { once } from "node:events";
+import os from "node:os";
+import { markdownFiles } from "../scripts/content-files.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const publicRoot = path.join(root, "public");
 const info = JSON.parse(
@@ -24,41 +26,55 @@ function walk(directory) {
     );
 }
 
-test("all top-level A/B/C/D/F analysis documents are published and originals are excluded", () => {
+test("all public Markdown documents are published and original files are excluded", () => {
   for (const group of ["A", "B", "C", "D", "F"])
-    for (const entry of fs.readdirSync(path.join(root, group), {
-      withFileTypes: true,
-    }))
+    for (const filename of walk(path.join(root, group)))
       assert.ok(
-        entry.isFile() && entry.name.endsWith(".md"),
-        `Unexpected source material: ${group}/${entry.name}`,
+        /\.md$/i.test(filename),
+        `Unexpected source material: ${filename}`,
       );
   const sources = ["A", "B", "C", "D", "F"].flatMap((group) =>
-    fs
-      .readdirSync(path.join(root, group), { withFileTypes: true })
-      .filter((e) => e.isFile() && e.name.endsWith(".md"))
-      .map((e) => `${group}/${e.name}`),
+    markdownFiles(path.join(root, group)).map((relative) => `${group}/${relative}`),
   );
   assert.deepEqual(
     new Set(info.documents.map((d) => d.source)),
     new Set(sources),
   );
-  assert.ok(
-    info.documents.some((d) => d.source === "C/독립비판_서브에이전트.md"),
-  );
-  assert.deepEqual(
-    info.documents.filter((d) => d.group === "D").map((d) => d.source),
-    ["D/02_종합결론.md"],
-  );
   for (const filename of walk(publicRoot)) {
     const relative = path.relative(publicRoot, filename).replaceAll("\\", "/");
     assert.doesNotMatch(
       relative,
-      /(^|\/)(원문|검증자료|검증|1차자료)(\/|$)|\.(pdf|md|png|jpe?g|docx?|pptx?)$/i,
+      /(^|\/)(archive|private)(\/|$)|\.(pdf|md|png|jpe?g|docx?|pptx?)$/i,
     );
   }
   assert.equal(info.groups.length, 5);
   assert.ok(info.excludedLocalReferences > 0);
+});
+
+test("document discovery includes guides and nested Markdown but excludes archive/private at any depth", () => {
+  const fixture = fs.mkdtempSync(path.join(os.tmpdir(), "eu-ai-act-content-"));
+  const files = [
+    "README.md", "01_analysis.md", "notes/sources.md",
+    "notes/archive_copy.md", "notes/ARCHIVE/old.md",
+    "archive/final.md", "private/readme.md", "notes/private/hidden.md",
+    "original.pdf", "notes/extract.txt",
+  ];
+  try {
+    for (const relative of files) {
+      const filename = path.join(fixture, relative);
+      fs.mkdirSync(path.dirname(filename), { recursive: true });
+      fs.writeFileSync(filename, "fixture");
+    }
+    assert.deepEqual(new Set(markdownFiles(fixture)), new Set([
+      "README.md", "01_analysis.md", "notes/sources.md", "notes/archive_copy.md",
+    ]));
+  } finally {
+    // Remove only the explicitly created fixture paths, without a recursive delete.
+    for (const relative of files) fs.unlinkSync(path.join(fixture, relative));
+    for (const relative of ["notes/ARCHIVE", "notes/private", "notes", "archive", "private"])
+      fs.rmdirSync(path.join(fixture, relative));
+    fs.rmdirSync(fixture);
+  }
 });
 
 test("every generated internal href/src and heading fragment resolves", () => {

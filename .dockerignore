@@ -6,10 +6,16 @@
 !A/*.md
 !B/
 !B/*.md
+!B/**/
+!B/**/*.md
 !C/
 !C/*.md
+!C/**/
+!C/**/*.md
 !D/
 !D/*.md
+!D/**/
+!D/**/*.md
 !F/
 !F/*.md
 !scripts/
@@ -19,3 +25,9 @@
 !deploy/
 !deploy/base/
 !deploy/base/nginx.conf
+B/**/archive/**
+B/**/private/**
+C/**/archive/**
+C/**/private/**
+D/**/archive/**
+D/**/private/**

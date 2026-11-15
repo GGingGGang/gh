@@ -18,3 +18,16 @@ coverage/
 *.pem
 *.key
 *-secret.yaml
+# B/C/D include every Markdown file outside archive/private, even nested guides.
+!B/**/
+!C/**/
+!D/**/
+!B/**/*.md
+!C/**/*.md
+!D/**/*.md
+B/**/archive/
+B/**/private/
+C/**/archive/
+C/**/private/
+D/**/archive/
+D/**/private/
